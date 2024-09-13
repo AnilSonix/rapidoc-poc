@@ -23,7 +23,6 @@
     <script>
       window.addEventListener("DOMContentLoaded", (event) => {
         const rapidocEl = document.getElementById("the-doc");
-        window.r = rapidocEl;
         rapidocEl.addEventListener("before-render", (e) => {
           // here we can change the spec before it renders
           // this is the only built-in hook to modify spec
