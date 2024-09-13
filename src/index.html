@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rapidoc demo custom</title>
+    <script src="./rapidoc-min.js"></script>
+  </head>
+  <body>
+    <h1>After 5 secs , the examples will be added</h1>
+    <h1>
+      A php sample is also present in the spec, we just add a js code snippet at
+      runtime
+    </h1>
+    <rapi-doc
+      id="the-doc"
+      spec-url="https://rapidocweb.com/specs/petstore_extended.yaml"
+      allow-authentication="false"
+      show-info="false"
+    >
+    </rapi-doc>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", (event) => {
+        const rapidocEl = document.getElementById("the-doc");
+        window.r = rapidocEl;
+        rapidocEl.addEventListener("before-render", (e) => {
+          // here we can change the spec before it renders
+          // this is the only built-in hook to modify spec
+          console.log("This the spec before it renders", e.detail);
+        });
+
+        console.log("This is the component", rapidocEl);
+
+        setTimeout(() => {
+          // rapidoc does have any explicit methods for mutating the spec
+          // In this custom build, I added two methods  (getResolvedSpec,triggerRender) to get the spec
+          // We may modify the spec and call the triggerRender to render again
+          alert(
+            "We're now updating the spec, an JS code example will be added now to pets"
+          );
+          const spec = rapidocEl.getResolvedSpec();
+          console.log();
+
+          // here php example is already added in yaml
+          // I just added a JS snipppet
+          // here spec can have some specifc shape , the dev modify must be already be familiar with it
+          // simple dev friendly wrappers can be created later
+          spec.tags[0].paths[0].xCodeSamples.push({
+            lang: "JS",
+            source: "console.log('dynamically added snippet')",
+          });
+
+          // we need to trigger render
+          // this delegates to Lit
+          rapidocEl.triggerRender();
+
+          // this is just for poc
+        }, 5000);
+      });
+    </script>
+  </body>
+</html>
